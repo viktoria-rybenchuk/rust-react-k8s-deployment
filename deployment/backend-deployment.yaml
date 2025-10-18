@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-rust
+  labels:
+    app: backend-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      containers:
+        - name: backend-rust
+          image: victoriar18/react-rust-postgres-backend:latest
+          ports:
+            - containerPort: 8000
+          workingDir: /code
+          env:
+            - name: PG_DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: react-rust-configmap
+                  key: database_name
+            - name: PG_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: react-rust-configmap
+                  key: database_host
+            - name: RUST_LOG
+              valueFrom:
+                configMapKeyRef:
+                  name: react-rust-configmap
+                  key: rust_log
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: postgres_password
+            - name: PG_USER
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: postgres_user
+      restartPolicy: Always

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-app
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+    spec:
+      containers:
+        - name: react-java-mysql-frontend
+          image: victoriar18/react-java-mysql-frontend:latest
+          ports:
+            - containerPort: 3000
+          workingDir: /code
+      restartPolicy: Always
